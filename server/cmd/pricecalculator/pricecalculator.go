@@ -18,6 +18,7 @@ type PriceCalculator struct {
 	ChannelFeeCappedValue float64 `json:"fees.channel.capped_value"`
 	OtherFeeRate          float64 `json:"fees.other.rate"`
 	OtherFixedFee         float64 `json:"fees.other.fixed"`
+	SelectProfitRate      float64 `json:"profit.rate"`
 }
 
 // New creates and returns a new instance of PriceCalculator
@@ -26,7 +27,7 @@ func New() *PriceCalculator {
 }
 
 // GetSellPriceByProfitRate calculates and returns the sell price given the profit rate
-func (pc *PriceCalculator) GetSellPriceByProfitRate(profitRate float64) (float64, error) {
+func (pc *PriceCalculator) GetSellPriceByProfitRate() (float64, error) {
 	numerator := pc.Cost
 	numerator += pc.FreeDeliveryPrice
 	numerator += pc.PaymentFixedFee
@@ -37,7 +38,7 @@ func (pc *PriceCalculator) GetSellPriceByProfitRate(profitRate float64) (float64
 	denominator -= pc.PaymentFeeRate
 	denominator -= pc.ChannelFeeRate
 	denominator -= pc.OtherFeeRate
-	denominator -= profitRate
+	denominator -= pc.SelectProfitRate
 
 	sellPriceUncappedFees := numerator / denominator
 
@@ -111,12 +112,12 @@ func (pc *PriceCalculator) GetProfitTotal() float64 {
 }
 
 // IsValidProfitRate checks if the profit rate is valid
-func (pc *PriceCalculator) IsValidProfitRate(profitRate float64) bool {
+func (pc *PriceCalculator) IsValidProfitRate() bool {
 	denominator := (1 / (1 + pc.SalesTaxFeeRate))
 	denominator -= pc.PaymentFeeRate
 	denominator -= pc.ChannelFeeRate
 	denominator -= pc.OtherFeeRate
-	denominator -= profitRate
+	denominator -= pc.SelectProfitRate
 
 	if !pc.ChannelFeeIsCapped || pc.ChannelFeeCappedValue == 0 {
 		if denominator <= 0 {

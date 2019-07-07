@@ -9,16 +9,9 @@ type SetExpected struct {
 	expected float64
 }
 
-type SetProfitExpected struct {
-	set        PriceCalculator
-	profitRate float64
-	expected   float64
-}
-
-type SetProfitExpectedBool struct {
-	set        PriceCalculator
-	profitRate float64
-	expected   bool
+type SetExpectedBool struct {
+	set      PriceCalculator
+	expected bool
 }
 
 func Set1() *PriceCalculator {
@@ -32,18 +25,19 @@ func Set1() *PriceCalculator {
 	pc.ChannelFeeRate = 0.09
 	pc.ChannelFeeIsCapped = true
 	pc.ChannelFeeCappedValue = 20
+	pc.SelectProfitRate = 0.79933
 	return pc
 }
 
 func TestGetSellPriceByProfitRate(t *testing.T) {
 	pc := Set1()
 
-	tcs := []SetProfitExpected{
-		{*pc, 0.79933, 36059999.999463506},
+	tcs := []SetExpected{
+		{*pc, 36059999.999463506},
 	}
 
 	for _, tc := range tcs {
-		result, err := pc.GetSellPriceByProfitRate(tc.profitRate)
+		result, err := pc.GetSellPriceByProfitRate()
 
 		if err != nil {
 			t.Errorf(err.Error())
@@ -148,12 +142,12 @@ func TestGetProfitTotal(t *testing.T) {
 func TestIsValidProfitRate(t *testing.T) {
 	pc := Set1()
 
-	tcs := []SetProfitExpectedBool{
-		{*pc, 0.79934, false},
+	tcs := []SetExpectedBool{
+		{*pc, true},
 	}
 
 	for _, tc := range tcs {
-		result := pc.IsValidProfitRate(tc.profitRate)
+		result := pc.IsValidProfitRate()
 		if result != tc.expected {
 			t.Errorf("Expected profit rate validity of %t got %t.", tc.expected, result)
 		}
