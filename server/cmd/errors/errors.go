@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// ErrorCode stores the error code along with a  message
+// ErrorCode stores the error code along with a message
 type ErrorCode struct {
 	code    int
 	message string
