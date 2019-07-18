@@ -17,15 +17,15 @@ type SetExpectedBool struct {
 func Set1() *PriceCalculator {
 	pc := New()
 	pc.SellPrice = 2500
-	pc.SalesTaxFeeRate = 0.20
+	pc.Fees.SalesTax.Rate = 0.20
 	pc.FreeDeliveryPrice = 0
 	pc.Cost = 100
-	pc.PaymentFeeRate = 0.034
-	pc.PaymentFixedFee = 0.20
-	pc.ChannelFeeRate = 0.09
-	pc.ChannelFeeIsCapped = true
-	pc.ChannelFeeCappedValue = 20
-	pc.SelectProfitRate = 0.79933
+	pc.Fees.Payment.Rate = 0.034
+	pc.Fees.Payment.Fixed = 0.20
+	pc.Fees.Channel.Rate = 0.09
+	pc.Fees.Channel.IsCapped = true
+	pc.Fees.Channel.CappedValue = 20
+	pc.Profit.Rate = 0.79933
 	return pc
 }
 

@@ -6,19 +6,31 @@ import (
 
 // PriceCalculator stores the price, costs, and fees
 type PriceCalculator struct {
-	SellPrice             float64 `json:"sell_price"`
-	FreeDeliveryPrice     float64 `json:"free_delivery_price"`
-	Cost                  float64 `json:"cost"`
-	SalesTaxFeeRate       float64 `json:"fees.sales_tax.rate"`
-	PaymentFeeRate        float64 `json:"fees.payment.rate"`
-	PaymentFixedFee       float64 `json:"fees.payment.fixed"`
-	ChannelFeeRate        float64 `json:"fees.channel.rate"`
-	ChannelFixedFee       float64 `json:"fees.channel.fixed"`
-	ChannelFeeIsCapped    bool    `json:"fees.channel.is_capped"`
-	ChannelFeeCappedValue float64 `json:"fees.channel.capped_value"`
-	OtherFeeRate          float64 `json:"fees.other.rate"`
-	OtherFixedFee         float64 `json:"fees.other.fixed"`
-	SelectProfitRate      float64 `json:"profit.rate"`
+	SellPrice         float64 `json:"sell_price"`
+	FreeDeliveryPrice float64 `json:"free_delivery_price"`
+	Cost              float64 `json:"cost"`
+	Fees              struct {
+		SalesTax struct {
+			Rate float64 `json:"rate"`
+		} `json:"sales_tax"`
+		Payment struct {
+			Rate  float64 `json:"rate"`
+			Fixed float64 `json:"fixed"`
+		} `json:"payment"`
+		Channel struct {
+			Rate        float64 `json:"rate"`
+			Fixed       float64 `json:"fixed"`
+			IsCapped    bool    `json:"is_capped"`
+			CappedValue float64 `json:"capped_value"`
+		} `json:"channel"`
+		Other struct {
+			Rate  float64 `json:"rate"`
+			Fixed float64 `json:"fixed"`
+		} `json:"other"`
+	} `json:"fees"`
+	Profit struct {
+		Rate float64 `json:"rate"`
+	} `json:"profit"`
 }
 
 // New creates and returns a new instance of PriceCalculator
@@ -30,36 +42,36 @@ func New() *PriceCalculator {
 func (pc *PriceCalculator) GetSellPriceByProfitRate() (float64, error) {
 	numerator := pc.Cost
 	numerator += pc.FreeDeliveryPrice
-	numerator += pc.PaymentFixedFee
-	numerator += pc.ChannelFixedFee
-	numerator += pc.OtherFixedFee
+	numerator += pc.Fees.Payment.Fixed
+	numerator += pc.Fees.Channel.Fixed
+	numerator += pc.Fees.Other.Fixed
 
-	denominator := (1 / (1 + pc.SalesTaxFeeRate))
-	denominator -= pc.PaymentFeeRate
-	denominator -= pc.ChannelFeeRate
-	denominator -= pc.OtherFeeRate
-	denominator -= pc.SelectProfitRate
+	denominator := (1 / (1 + pc.Fees.SalesTax.Rate))
+	denominator -= pc.Fees.Payment.Rate
+	denominator -= pc.Fees.Channel.Rate
+	denominator -= pc.Fees.Other.Rate
+	denominator -= pc.Profit.Rate
 
 	sellPriceUncappedFees := numerator / denominator
 
-	if !pc.ChannelFeeIsCapped || pc.ChannelFeeCappedValue == 0 {
+	if !pc.Fees.Channel.IsCapped || pc.Fees.Channel.CappedValue == 0 {
 		if denominator <= 0 {
 			err := ec.New(ec.NegDenUncappedFees, "Negative denomiator with uncapped fees.")
 			return 0, err
 		}
 		return sellPriceUncappedFees, nil
-	} else if denominator+pc.ChannelFeeRate <= 0 {
+	} else if denominator+pc.Fees.Channel.Rate <= 0 {
 		err := ec.New(ec.NegDenCappedFees, "Negative denominator with capped fees.")
 		return 0, err
 	}
 
-	channelFees := sellPriceUncappedFees*pc.ChannelFeeRate + pc.ChannelFixedFee
+	channelFees := sellPriceUncappedFees*pc.Fees.Channel.Rate + pc.Fees.Channel.Fixed
 
-	if channelFees < pc.ChannelFixedFee || channelFees > pc.ChannelFeeCappedValue {
-		channelFees = pc.ChannelFeeCappedValue
+	if channelFees < pc.Fees.Channel.Fixed || channelFees > pc.Fees.Channel.CappedValue {
+		channelFees = pc.Fees.Channel.CappedValue
 	}
 
-	sellPriceCappedFees := (numerator + channelFees) / (denominator + pc.ChannelFeeRate)
+	sellPriceCappedFees := (numerator + channelFees) / (denominator + pc.Fees.Channel.Rate)
 
 	return sellPriceCappedFees, nil
 }
@@ -75,23 +87,23 @@ func (pc *PriceCalculator) GetFeesTotal() float64 {
 
 // GetSalesTaxFeesTotal calculates and returns the sales tax
 func (pc *PriceCalculator) GetSalesTaxFeesTotal() float64 {
-	return pc.SellPrice * (1 - (1 / (1 + pc.SalesTaxFeeRate)))
+	return pc.SellPrice * (1 - (1 / (1 + pc.Fees.SalesTax.Rate)))
 }
 
 // GetPaymentFeesTotal calculates and returns the payments fees
 func (pc *PriceCalculator) GetPaymentFeesTotal() float64 {
-	return pc.SellPrice*pc.PaymentFeeRate + pc.PaymentFixedFee
+	return pc.SellPrice*pc.Fees.Payment.Rate + pc.Fees.Payment.Fixed
 }
 
 // GetChannelFeesTotal calculates and returns the channel fees
 func (pc *PriceCalculator) GetChannelFeesTotal() float64 {
-	channelFeesUncapped := pc.SellPrice*pc.ChannelFeeRate + pc.ChannelFixedFee
+	channelFeesUncapped := pc.SellPrice*pc.Fees.Channel.Rate + pc.Fees.Channel.Fixed
 	channelFees := channelFeesUncapped
 
-	if pc.ChannelFeeIsCapped &&
-		pc.ChannelFeeCappedValue != 0 &&
-		channelFeesUncapped > pc.ChannelFeeCappedValue {
-		channelFees = pc.ChannelFeeCappedValue
+	if pc.Fees.Channel.IsCapped &&
+		pc.Fees.Channel.CappedValue != 0 &&
+		channelFeesUncapped > pc.Fees.Channel.CappedValue {
+		channelFees = pc.Fees.Channel.CappedValue
 	}
 
 	return channelFees
@@ -99,7 +111,7 @@ func (pc *PriceCalculator) GetChannelFeesTotal() float64 {
 
 // GetOtherFeesTotal calculates and returns the other fees
 func (pc *PriceCalculator) GetOtherFeesTotal() float64 {
-	return pc.SellPrice*pc.OtherFeeRate + pc.OtherFixedFee
+	return pc.SellPrice*pc.Fees.Other.Rate + pc.Fees.Other.Fixed
 }
 
 // GetProfitTotal calculates and returns the profit total
@@ -113,17 +125,17 @@ func (pc *PriceCalculator) GetProfitTotal() float64 {
 
 // IsValidProfitRate checks if the profit rate is valid
 func (pc *PriceCalculator) IsValidProfitRate() bool {
-	denominator := (1 / (1 + pc.SalesTaxFeeRate))
-	denominator -= pc.PaymentFeeRate
-	denominator -= pc.ChannelFeeRate
-	denominator -= pc.OtherFeeRate
-	denominator -= pc.SelectProfitRate
+	denominator := (1 / (1 + pc.Fees.SalesTax.Rate))
+	denominator -= pc.Fees.Payment.Rate
+	denominator -= pc.Fees.Channel.Rate
+	denominator -= pc.Fees.Other.Rate
+	denominator -= pc.Profit.Rate
 
-	if !pc.ChannelFeeIsCapped || pc.ChannelFeeCappedValue == 0 {
+	if !pc.Fees.Channel.IsCapped || pc.Fees.Channel.CappedValue == 0 {
 		if denominator <= 0 {
 			return false
 		}
-	} else if denominator+pc.ChannelFeeRate <= 0 {
+	} else if denominator+pc.Fees.Channel.Rate <= 0 {
 		return false
 	}
 
