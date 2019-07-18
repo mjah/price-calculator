@@ -1,0 +1,13 @@
+# Default
+Dockerfile*
+docker-compose*
+.dockerignore
+.git
+.gitignore
+
+# NodeJS
+node_modules
+npm-debug.log
+
+# React
+build
