@@ -19,9 +19,12 @@ const Result = ({ results, error, clearResults }: any) => {
           <button type="button" onClick={() => {clearResults()}}>
             Clear All Results
           </button>
-          <button type="button" onClick={() => { setDecimalPlace( toFixedDecimalPlace > 0 ? toFixedDecimalPlace-1 : 0 )}}
-            >
-            {toFixedDecimalPlace > 0 ? toFixedDecimalPlace-1 : 0} d.p.
+          <button
+            type="button"
+            onClick={() => { setDecimalPlace( toFixedDecimalPlace > 0 ? toFixedDecimalPlace-1 : 0 )}}
+            disabled={toFixedDecimalPlace === 0}
+          >
+            {toFixedDecimalPlace > 0 ? toFixedDecimalPlace-1 : "-"} d.p.
           </button>
           <button type="button" onClick={() => {setDecimalPlace(toFixedDecimalPlace+1)}}>
             {toFixedDecimalPlace+1} d.p.
