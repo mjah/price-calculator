@@ -16,7 +16,11 @@ function* workerSaga(action: any) {
 }
 
 function getResults(bodyData: any) {
-  return fetch('http://localhost:9096/v1/all_results', {
+  let priceCalcApi = 'http://localhost:9096/v1/all_results'
+  if (process.env.REACT_APP_PRICECALCULATOR_API) {
+    priceCalcApi = process.env.REACT_APP_PRICECALCULATOR_API + '/all_results'
+  }
+  return fetch(priceCalcApi, {
     method: 'post',
     headers: { 'Content-Type': 'application/json' },
     body: bodyData
