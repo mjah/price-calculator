@@ -108,14 +108,14 @@ func main() {
 	api := r.Group("/v1")
 
 	// all results
-	api.GET("/all_results", func(c *gin.Context) {
+	api.POST("/all_results", func(c *gin.Context) {
 		executeRequest(c, allResults)
 	})
 
 	// price group
 	price := api.Group("/price")
 	{
-		price.GET("/by_profit_rate", func(c *gin.Context) {
+		price.POST("/by_profit_rate", func(c *gin.Context) {
 			executeRequest(c, getSellPriceByProfitRate)
 		})
 	}
@@ -123,19 +123,19 @@ func main() {
 	// fees group
 	fees := api.Group("/fees")
 	{
-		fees.GET("/total", func(c *gin.Context) {
+		fees.POST("/total", func(c *gin.Context) {
 			executeRequest(c, getFeesTotal)
 		})
-		fees.GET("/sales_tax", func(c *gin.Context) {
+		fees.POST("/sales_tax", func(c *gin.Context) {
 			executeRequest(c, getSalesTaxFeesTotal)
 		})
-		fees.GET("/payment", func(c *gin.Context) {
+		fees.POST("/payment", func(c *gin.Context) {
 			executeRequest(c, getPaymentFeesTotal)
 		})
-		fees.GET("/channel", func(c *gin.Context) {
+		fees.POST("/channel", func(c *gin.Context) {
 			executeRequest(c, getChannelFeesTotal)
 		})
-		fees.GET("/other", func(c *gin.Context) {
+		fees.POST("/other", func(c *gin.Context) {
 			executeRequest(c, getOtherFeesTotal)
 		})
 	}
@@ -143,10 +143,10 @@ func main() {
 	// profit group
 	profit := api.Group("/profit")
 	{
-		profit.GET("/total", func(c *gin.Context) {
+		profit.POST("/total", func(c *gin.Context) {
 			executeRequest(c, getProfitTotal)
 		})
-		profit.GET("/is_valid", func(c *gin.Context) {
+		profit.POST("/is_valid", func(c *gin.Context) {
 			executeRequest(c, isValidProfitRate)
 		})
 	}
