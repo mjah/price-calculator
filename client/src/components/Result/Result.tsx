@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { clearResults } from '../../store/pricecalculator/actions'
 
 const Result = ({ results, error, clearResults }: any) => {
+  const [toFixedDecimalPlace, setDecimalPlace] = useState(2)
+
   return (
     <>
       {error ? (
@@ -17,6 +19,13 @@ const Result = ({ results, error, clearResults }: any) => {
           <button type="button" onClick={() => {clearResults()}}>
             Clear All Results
           </button>
+          <button type="button" onClick={() => { setDecimalPlace( toFixedDecimalPlace > 0 ? toFixedDecimalPlace-1 : 0 )}}
+            >
+            {toFixedDecimalPlace > 0 ? toFixedDecimalPlace-1 : 0} d.p.
+          </button>
+          <button type="button" onClick={() => {setDecimalPlace(toFixedDecimalPlace+1)}}>
+            {toFixedDecimalPlace+1} d.p.
+          </button>
           {results.slice(0).reverse().map((result: any, i: any) => (
             <div key={results.length-i}>
               <h3>#{results.length-i}</h3>
@@ -25,17 +34,17 @@ const Result = ({ results, error, clearResults }: any) => {
               </div>
               <div>
                 <strong>Results:</strong>
-                <div>Fees Total: <span>{result.getFeesTotal}</span>
+                <div>Fees Total: <span>{result.getFeesTotal.toFixed(toFixedDecimalPlace)}</span>
                   <ul>
-                    <li>Channel Fees Total: <span>{result.getChannelFeesTotal}</span></li>
-                    <li>Payment Fees Total: <span>{result.getPaymentFeesTotal}</span></li>
-                    <li>Other Fees Total: <span>{result.getOtherFeesTotal}</span></li>
-                    <li>Sales Tax Fees Total: <span>{result.getSalesTaxFeesTotal}</span></li>
+                    <li>Channel Fees Total: <span>{result.getChannelFeesTotal.toFixed(toFixedDecimalPlace)}</span></li>
+                    <li>Payment Fees Total: <span>{result.getPaymentFeesTotal.toFixed(toFixedDecimalPlace)}</span></li>
+                    <li>Other Fees Total: <span>{result.getOtherFeesTotal.toFixed(toFixedDecimalPlace)}</span></li>
+                    <li>Sales Tax Fees Total: <span>{result.getSalesTaxFeesTotal.toFixed(toFixedDecimalPlace)}</span></li>
                   </ul>
                 </div>
-                <div>Profit Total: <span>{result.getProfitTotal}</span></div>
+                <div>Profit Total: <span>{result.getProfitTotal.toFixed(toFixedDecimalPlace)}</span></div>
                 {result.isValidProfitRate ? (
-                  <div>Sell Price by Profit Rate: <span>{result.getSellPriceByProfitRate}</span></div>
+                  <div>Sell Price by Profit Rate: <span>{result.getSellPriceByProfitRate.toFixed(toFixedDecimalPlace)}</span></div>
                 ) : (
                   <div>Invalid Profit Rate.</div>
                 )}
