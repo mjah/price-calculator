@@ -1,7 +1,7 @@
 package pricecalculator
 
 import (
-	ec "../errors"
+	ec "github.com/mjah/price-calculator/server/errors"
 )
 
 // PriceCalculator stores the price, costs, and fees

@@ -3,9 +3,9 @@ package main
 import (
 	"net/http"
 
-	pc "./pricecalculator"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	pc "github.com/mjah/price-calculator/server/pricecalculator"
 )
 
 // Request types

@@ -1,7 +1,7 @@
 # Build binary
 FROM golang:1.12-alpine AS builder
 WORKDIR /app
-COPY cmd .
+COPY . .
 RUN apk add --no-cache git build-base
 RUN go get -d -v ./...
 RUN go test ./...
