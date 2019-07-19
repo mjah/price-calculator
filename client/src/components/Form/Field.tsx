@@ -3,16 +3,13 @@ import { Field } from 'react-final-form'
 
 const InputField = ({ fieldDetails }: any) => {
   switch(fieldDetails.type) {
-    case "yesno_dropdown": {
+    case "checkbox": {
       return (
-        <Field name={fieldDetails.id} validate={fieldDetails.validate}>
-          {({ input, meta }) => (
+        <Field name={fieldDetails.id} type={fieldDetails.type} validate={fieldDetails.validate}>
+          {({ input }) => (
             <div>
               <label>{fieldDetails.label}</label>
-              <select name={input.name} onChange={(value) => input.onChange(value)}>
-                <option value="false">No</option>
-                <option value="true">Yes</option>
-              </select>
+              <input {...input} type={fieldDetails.type} />
             </div>
           )}
         </Field>
@@ -24,7 +21,7 @@ const InputField = ({ fieldDetails }: any) => {
           {({ input, meta }) => (
             <div>
               <label>{fieldDetails.label}</label>
-              <input {...input} type="text" placeholder={fieldDetails.label} />
+              <input {...input} type="number" placeholder="0.00" />
               {meta.error && meta.touched && <span>{meta.error}</span>}
             </div>
           )}
