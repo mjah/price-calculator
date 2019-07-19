@@ -7,20 +7,18 @@ export default function* watcherSaga() {
 
 function* workerSaga(action: any) {
   try {
-    const payload = yield call(getResults, action.payload)
-    payload.submitted = action.payload
-    yield put({ type: RESULTS_LOADED, payload })
+    const payload = yield call(getResults, action.payload);
+    payload.submitted = action.payload;
+    yield put({ type: RESULTS_LOADED, payload });
   } catch (e) {
-    yield put({ type: API_ERRORED, payload: e })
+    yield put({ type: API_ERRORED, payload: e });
   }
 }
 
 function getResults(bodyData: any) {
-  return fetch("http://localhost:9096/v1/all_results", {
-    method: "post",
+  return fetch('http://localhost:9096/v1/all_results', {
+    method: 'post',
     headers: { 'Content-Type': 'application/json' },
     body: bodyData
-  }).then(
-    response => response.json()
-  );
+  }).then((response) => response.json());
 }

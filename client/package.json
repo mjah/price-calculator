@@ -2,6 +2,16 @@
   "name": "pricecalculator-client",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "prettier": "prettier --write \"src/**/*.{ts,tsx,css}\"",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "prettier": "^1.18.2"
+  },
   "dependencies": {
     "@types/jest": "24.0.15",
     "@types/node": "12.0.11",
@@ -20,12 +30,6 @@
     "redux-saga": "^1.0.5",
     "styled-components": "^4.3.2",
     "typescript": "3.5.2"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"

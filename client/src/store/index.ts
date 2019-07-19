@@ -6,13 +6,8 @@ import saga from './pricecalculator/saga';
 
 const initialiseSagaMiddleware = createSagaMiddleware();
 
-const store = createStore(
-  reducer,
-  composeWithDevTools(
-    applyMiddleware(initialiseSagaMiddleware)
-  )
-)
+const store = createStore(reducer, composeWithDevTools(applyMiddleware(initialiseSagaMiddleware)));
 
-initialiseSagaMiddleware.run(saga)
+initialiseSagaMiddleware.run(saga);
 
 export default store;

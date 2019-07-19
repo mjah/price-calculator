@@ -4,9 +4,9 @@ export const RESULTS_CLEAR = 'RESULTS_CLEAR';
 export const API_ERRORED = 'API_ERRORED';
 
 export function getResults(payload: any) {
-  return { type: RESULTS_REQUESTED, payload }
+  return { type: RESULTS_REQUESTED, payload };
 }
 
 export function clearResults() {
-  return { type: RESULTS_CLEAR }
+  return { type: RESULTS_CLEAR };
 }

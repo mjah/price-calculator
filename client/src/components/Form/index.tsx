@@ -1,3 +1,3 @@
-import PriceCalculatorForm from './PriceCalculatorForm'
+import PriceCalculatorForm from './PriceCalculatorForm';
 
 export default PriceCalculatorForm;

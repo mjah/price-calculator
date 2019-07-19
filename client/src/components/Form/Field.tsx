@@ -1,9 +1,9 @@
-import React from 'react'
-import { Field } from 'react-final-form'
+import React from 'react';
+import { Field } from 'react-final-form';
 
 const InputField = ({ fieldDetails }: any) => {
-  switch(fieldDetails.type) {
-    case "checkbox": {
+  switch (fieldDetails.type) {
+    case 'checkbox': {
       return (
         <Field name={fieldDetails.id} type={fieldDetails.type} validate={fieldDetails.validate}>
           {({ input }) => (
@@ -13,7 +13,7 @@ const InputField = ({ fieldDetails }: any) => {
             </div>
           )}
         </Field>
-      )
+      );
     }
     default: {
       return (
@@ -26,9 +26,9 @@ const InputField = ({ fieldDetails }: any) => {
             </div>
           )}
         </Field>
-      )
+      );
     }
   }
-}
+};
 
-export default InputField
+export default InputField;
