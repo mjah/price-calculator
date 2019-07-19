@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Form } from 'react-final-form';
 import InputField from './Field';
 import { getResults } from '../../store/pricecalculator/actions';
+import Button from '../Button';
 
 const mustBeNumber = (value: any) =>
   isNaN(value) && typeof value !== 'undefined' ? 'Must be a number' : undefined;
@@ -98,12 +99,12 @@ const PriceCalculatorForm = ({ getResults }: any) => {
             <InputField key={i} fieldDetails={field} />
           ))}
           <div className="buttons">
-            <button type="submit" disabled={submitting}>
+            <Button type="submit" disabled={submitting}>
               Submit
-            </button>
-            <button type="button" onClick={form.reset} disabled={submitting || pristine}>
+            </Button>
+            <Button type="button" onClick={form.reset} disabled={submitting || pristine}>
               Reset
-            </button>
+            </Button>
           </div>
         </form>
       )}

@@ -6,12 +6,12 @@ import styled from 'styled-components';
 const Wrapper = styled.section`
   margin: 0 auto;
   padding: 1em;
-  max-width: 1200px;
+  max-width: 1000px;
   text-align: center;
 `;
 
 const Title = styled.h1`
-  margin: 0.5em 0 1em 0;
+  margin: 0.5em 0;
   font-size: 2em;
 `;
 

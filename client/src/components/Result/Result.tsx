@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { clearResults } from '../../store/pricecalculator/actions';
+import Button from '../Button';
 
 const Result = ({ results, error, clearResults }: any) => {
   const [toFixedDecimalPlace, setDecimalPlace] = useState(2);
@@ -18,15 +19,15 @@ const Result = ({ results, error, clearResults }: any) => {
       {results.length !== 0 ? (
         <div>
           <h2>All Results</h2>
-          <button
+          <Button
             type="button"
             onClick={() => {
               clearResults();
             }}
           >
             Clear All Results
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={() => {
               setDecimalPlace(toFixedDecimalPlace > 0 ? toFixedDecimalPlace - 1 : 0);
@@ -34,15 +35,15 @@ const Result = ({ results, error, clearResults }: any) => {
             disabled={toFixedDecimalPlace === 0}
           >
             {toFixedDecimalPlace > 0 ? toFixedDecimalPlace - 1 : '-'} d.p.
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={() => {
               setDecimalPlace(toFixedDecimalPlace + 1);
             }}
           >
             {toFixedDecimalPlace + 1} d.p.
-          </button>
+          </Button>
           {results
             .slice(0)
             .reverse()
