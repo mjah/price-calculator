@@ -1,6 +1,9 @@
 all:
 	docker-compose up -d
 
+all_down:
+	docker-compose down
+
 build_server:
 	docker build -t pricecalculator/server server
 

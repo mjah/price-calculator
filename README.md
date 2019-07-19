@@ -12,3 +12,9 @@ make all
 ```
 
 Then visit: [localhost:5000](http://localhost:8080)
+
+To stop, execute:
+
+```sh
+make all_down
+```
