@@ -14,20 +14,22 @@ const ButtonStyle = styled.button`
     background-color: #333;
   }
 
+  &:active {
+    background-color: #000;
+  }
+
+  &:focus {
+    outline: 0;
+  }
+
   &:disabled {
     color: #ccc;
     background-color: #333;
   }
-`
+`;
 
 const Button = ({ children, ...rest }: any) => {
-  return (
-  <ButtonStyle
-    {...rest}
-  >
-    {children}
-  </ButtonStyle>
-  )
-}
+  return <ButtonStyle {...rest}>{children}</ButtonStyle>;
+};
 
-export default Button
+export default Button;

@@ -1,9 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Form } from 'react-final-form';
+import styled from 'styled-components';
 import InputField from './Field';
 import { getResults } from '../../store/pricecalculator/actions';
 import Button from '../Button';
+
+const FormStyle = styled.form`
+  padding: 1em 0;
+  margin: 0.5em;
+  background-color: #111;
+  border-radius: 0.75em;
+`;
 
 const mustBeNumber = (value: any) =>
   isNaN(value) && typeof value !== 'undefined' ? 'Must be a number' : undefined;
@@ -94,7 +102,7 @@ const PriceCalculatorForm = ({ getResults }: any) => {
     <Form
       onSubmit={onSubmit}
       render={({ handleSubmit, form, submitting, pristine }) => (
-        <form onSubmit={handleSubmit}>
+        <FormStyle onSubmit={handleSubmit}>
           {fields.map((field: any, i) => (
             <InputField key={i} fieldDetails={field} />
           ))}
@@ -106,7 +114,7 @@ const PriceCalculatorForm = ({ getResults }: any) => {
               Reset
             </Button>
           </div>
-        </form>
+        </FormStyle>
       )}
     />
   );
