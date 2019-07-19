@@ -1,9 +1,60 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { clearResults } from '../../store/pricecalculator/actions'
 
-const Result = () => (
-  <>
-    <h2>Result</h2>
-  </>
-)
+const Result = ({ results, error, clearResults }: any) => {
+  return (
+    <>
+      {error ? (
+        <div>
+          <h2>Error</h2>
+          <span>{String(error)}</span>
+        </div>
+      ):(<></>)}
+      {results.length !== 0 ? (
+        <div>
+          <h2>All Results</h2>
+          <button type="button" onClick={() => {clearResults()}}>
+            Clear All Results
+          </button>
+          {results.slice(0).reverse().map((result: any, i: any) => (
+            <div key={results.length-i}>
+              <h3>#{results.length-i}</h3>
+              <div>
+                <strong>Submitted:</strong> {JSON.stringify(JSON.parse(result.submitted), null, 2)}
+              </div>
+              <div>
+                <strong>Results:</strong>
+                <div>Fees Total: <span>{result.getFeesTotal}</span>
+                  <ul>
+                    <li>Channel Fees Total: <span>{result.getChannelFeesTotal}</span></li>
+                    <li>Payment Fees Total: <span>{result.getPaymentFeesTotal}</span></li>
+                    <li>Other Fees Total: <span>{result.getOtherFeesTotal}</span></li>
+                    <li>Sales Tax Fees Total: <span>{result.getSalesTaxFeesTotal}</span></li>
+                  </ul>
+                </div>
+                <div>Profit Total: <span>{result.getProfitTotal}</span></div>
+                {result.isValidProfitRate ? (
+                  <div>Sell Price by Profit Rate: <span>{result.getSellPriceByProfitRate}</span></div>
+                ) : (
+                  <div>Invalid Profit Rate.</div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      ):(<></>)}
+    </>
+  )
+}
 
-export default Result;
+const mapStateToProps = (state: any) => ({
+  results: state.results,
+  error: state.error
+})
+
+const mapDispatchToProps = (dispatch: any) => ({
+  clearResults: () => dispatch(clearResults())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Result);

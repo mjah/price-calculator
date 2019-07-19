@@ -1,6 +1,8 @@
 import React from 'react'
+import { connect } from 'react-redux';
 import { Form } from 'react-final-form'
 import InputField from './Field'
+import { getResults } from '../../store/pricecalculator/actions'
 
 const mustBeNumber = (value: any) =>
   (isNaN(value) && typeof value !== 'undefined') ? 'Must be a number' : undefined
@@ -77,37 +79,40 @@ const fields = [
   }
 ]
 
-const stringToFloat = (name: any, val: any) => {
+const stringToFloatReplacer = (name: any, val: any) => {
   return typeof val === 'string' ? parseFloat(val) : val
 }
 
-const onSubmit = (values: any) => {
-  window.alert(JSON.stringify(values, stringToFloat, 2))
+const PriceCalculatorForm = ({ getResults }: any) => {
+  const onSubmit = (values: any) => {
+    let bodyData = JSON.stringify(values, stringToFloatReplacer, 2)
+    getResults(bodyData)
+  }
+
+  return (
+    <Form
+      onSubmit={onSubmit}
+      render={({ handleSubmit, form, submitting, pristine }) => (
+        <form onSubmit={handleSubmit}>
+          {fields.map((field: any, i) => (
+            <InputField key={i} fieldDetails={field} />
+          ))}
+          <div className="buttons">
+            <button type="submit" disabled={submitting}>
+              Submit
+            </button>
+            <button type="button" onClick={form.reset} disabled={submitting || pristine}>
+              Reset
+            </button>
+          </div>
+        </form>
+      )}
+    />
+  )
 }
 
-const PriceCalculatorForm = () => (
-  <Form
-    onSubmit={onSubmit}
-    render={({ handleSubmit, form, submitting, pristine }) => (
-      <form onSubmit={handleSubmit}>
-        {fields.map((field: any, i) => (
-          <InputField key={i} fieldDetails={field} />
-        ))}
-        <div className="buttons">
-          <button type="submit" disabled={submitting}>
-            Submit
-          </button>
-          <button
-            type="button"
-            onClick={form.reset}
-            disabled={submitting || pristine}
-          >
-            Reset
-          </button>
-        </div>
-      </form>
-    )}
-  />
-)
+const mapDispatchToProps = (dispatch: any) => ({
+  getResults: (payload: any) => dispatch(getResults(payload))
+})
 
-export default PriceCalculatorForm;
+export default connect(null, mapDispatchToProps)(PriceCalculatorForm);
